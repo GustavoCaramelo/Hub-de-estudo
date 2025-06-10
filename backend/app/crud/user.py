@@ -4,6 +4,10 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from app.models import user as models
 from app.schemas import user as schemas
+from app.auth.security import hash_password
+from fastapi import HTTPException
+from app.schemas.user import UserCreate
+
 
 def get_user(db: Session, user_id: int):
     return db.query(models.user.User).filter(models.user.User.id == user_id).first()
@@ -14,8 +18,16 @@ def get_user_by_email(db: Session, email: str):
 def get_users(db: Session, skip: int = 0, limit: int = 10):
     return db.query(models.user.User).offset(skip).limit(limit).all()
 
-def create_user(db: Session, user: schemas.user.UserCreate):
-    db_user = models.user.User(name=user.name, email=user.email)
+def create_user(db: Session, user: UserCreate) -> models.User:
+    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="E-mail já cadastrado.")
+    
+    db_user = models.User(
+        name=user.name,
+        email=user.email,
+        password=hash_password(user.password)
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

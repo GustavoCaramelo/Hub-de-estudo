@@ -8,13 +8,13 @@ class UserBase(BaseModel):
     email: str
 
 class UserCreate(UserBase):
-    pass
+    password: str
 
 class User(UserBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         
 class UserUpdate(BaseModel):
     name: Optional[str] = None
