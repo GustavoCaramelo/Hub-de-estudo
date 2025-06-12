@@ -1,18 +1,19 @@
-"""add password field to User
+"""create users table
 
-Revision ID: 1be6b225441d
-Revises: 
-Create Date: 2025-06-10 15:13:15.729347
+Revision ID: ed02392940ab
+Revises: 1be6b225441d
+Create Date: 2025-06-11 10:50:25.101018
+
 """
-
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
 
+
 # revision identifiers, used by Alembic.
-revision: str = '1be6b225441d'
-down_revision: Union[str, None] = None
+revision: str = 'ed02392940ab'
+down_revision: Union[str, None] = '1be6b225441d'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -26,6 +27,7 @@ def upgrade() -> None:
         sa.Column('email', sa.String, nullable=False, unique=True, index=True),
         sa.Column('password', sa.String, nullable=False)
     )
+
 
 
 def downgrade() -> None:
